@@ -20,8 +20,18 @@ namespace HRCompanyPortal.Areas.Identity
                     options.UseSqlServer(
                         context.Configuration.GetConnectionString("HRCompanyPortalContextConnection")));
 
-                services.AddDefaultIdentity<HRCompanyPortalUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                services.AddDefaultIdentity<HRCompanyPortalUser>(options =>
+                {
+
+                    options.Password.RequiredLength = 7;
+                    options.Password.RequireDigit = true;
+                    options.Password.RequireLowercase = true;
+                    options.Password.RequireNonAlphanumeric = true;
+                    options.SignIn.RequireConfirmedAccount = true;
+
+                })
                     .AddEntityFrameworkStores<HRCompanyPortalContext>();
+                
             });
         }
     }

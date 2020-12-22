@@ -1,20 +1,20 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using HRCompanyPortal.Areas.Identity.Data;
-using HRCompanyPortal.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 
-namespace HRCompanyPortal.Data
+namespace HRCompanyPortal.Models
 {
-    public class HRCompanyPortalContext : IdentityDbContext<HRCompanyPortalUser>
+    public class HRComPortalDbContext :DbContext
     {
-        public HRCompanyPortalContext(DbContextOptions<HRCompanyPortalContext> options)
-            : base(options)
-        {
+
+
+        //public HRComPortalDbContext(DbContextOptions<HRComPortalDbContext> options) :base(options)
+        //{
+
+        public HRComPortalDbContext() { 
+
         }
 
 
@@ -26,5 +26,9 @@ namespace HRCompanyPortal.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
+        //Add your model classes
+        public DbSet<Employee> Employees { get; set; }
+
+
     }
 }

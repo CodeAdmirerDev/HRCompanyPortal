@@ -10,22 +10,15 @@ namespace HRCompanyPortal.Models
     {
 
 
-        //public HRComPortalDbContext(DbContextOptions<HRComPortalDbContext> options) :base(options)
-        //{
-
-        public HRComPortalDbContext() { 
-
-        }
-
-
-
-        protected override void OnModelCreating(ModelBuilder builder)
+        public HRComPortalDbContext(DbContextOptions<HRComPortalDbContext> options) : base(options)
         {
-            base.OnModelCreating(builder);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
+
+         
         }
+
+
+
+        
         //Add your model classes
         public DbSet<Employee> Employees { get; set; }
 

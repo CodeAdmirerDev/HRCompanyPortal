@@ -17,12 +17,9 @@ namespace HRCompanyPortal.Areas.Identity
         public void Configure(IWebHostBuilder builder)
         {
             builder.ConfigureServices((context, services) => {
-                //services.AddDbContext<HRCompanyPortalContext>(options =>
-                //    options.UseSqlServer(
-                //        context.Configuration.GetConnectionString("HRCompanyPortalContextConnection")));
-                services.AddDbContext<HRComPortalDbContext>(options =>
+                services.AddDbContext<HRCompanyPortalContext>(options =>
                     options.UseSqlServer(
-                        context.Configuration.GetConnectionString("HRComPortalDbContextConnection")));
+                        context.Configuration.GetConnectionString("HRCompanyPortalContextConnection")));
 
 
 

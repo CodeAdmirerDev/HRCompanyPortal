@@ -10,13 +10,12 @@ namespace HRCompanyPortal.Models
     {
 
 
-        public HRComPortalDbContext(DbContextOptions<HRComPortalDbContext> options) : base(options)
+        public HRComPortalDbContext(DbContextOptions<HRComPortalDbContext> options) 
+        : base(options)
         {
 
          
         }
-
-
 
         
         //Add your model classes

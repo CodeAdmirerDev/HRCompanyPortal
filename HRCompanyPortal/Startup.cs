@@ -28,7 +28,8 @@ namespace HRCompanyPortal
             services.AddControllersWithViews();
             services.AddRazorPages();
 
-            services.AddDbContext<HRComPortalDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("HRComPortalDbContextConnection")));
+            services.AddDbContext<HRComPortalDbContext>(options => 
+            options.UseSqlServer(Configuration.GetConnectionString("HRComPortalDbContextConnection")));
 
         }
 

@@ -6,6 +6,7 @@ using HRCompanyPortal.Areas.Identity.Data;
 using HRCompanyPortal.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,11 +26,15 @@ namespace HRCompanyPortal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<HRComPortalDbContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("HRComPortalDbContextConnection")));
+
+
+            
             services.AddControllersWithViews();
             services.AddRazorPages();
 
-            services.AddDbContext<HRComPortalDbContext>(options => 
-            options.UseSqlServer(Configuration.GetConnectionString("HRComPortalDbContextConnection")));
+
 
         }
 

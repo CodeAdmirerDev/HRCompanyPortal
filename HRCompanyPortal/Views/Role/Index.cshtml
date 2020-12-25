@@ -5,12 +5,8 @@
 <h1>Roles</h1>
 
 <a asp-action="Create" class="btn btn-danger"> Create a Role</a>
-
-
 <table>
-
     <tr>
-
         <th>
             Id
         </th>
@@ -19,7 +15,6 @@
         <th>Update Role</th>
         <th>Delete Role</th>
     </tr>
-    
 
         @foreach (var role in Model)
         {
@@ -28,14 +23,13 @@
 
     <td>@role.Name</td>
     <td></td>
-    <td><a class="btn btn-primary" asp-action="Update" asp-route-id="@role.Id"></a></td>  
-    <td><a class="btn btn-danger" asp-action="Delete" asp-route-id="@role.Id"></a></td>
+    <td><a class="btn btn-primary" asp-action="Update" asp-route-id="@role.Id">Update Role</a></td>  
+    <td>
+        <form asp-action="Delete" asp-route-id="@role.Id" method="post">
 
-
+            <button type="submit" class="btn btn-danger">Delete Role</button>
+        </form>
+    </td>
 </tr>
     }
-
-
-
-
 </table>

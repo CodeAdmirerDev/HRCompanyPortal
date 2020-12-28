@@ -33,8 +33,7 @@ namespace HRCompanyPortal
             
             services.AddControllersWithViews();
             services.AddRazorPages();
-
-
+            
 
         }
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using HRCompanyPortal.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HRCompanyPortal.Controllers
 {
@@ -17,12 +18,13 @@ namespace HRCompanyPortal.Controllers
         {
             _logger = logger;
         }
-
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
         }
 
+        [Authorize(Roles ="Admin")]
         public IActionResult Privacy()
         {
             return View();

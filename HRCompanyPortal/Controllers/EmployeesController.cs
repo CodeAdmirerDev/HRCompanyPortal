@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HRCompanyPortal.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HRCompanyPortal.Controllers
 {
@@ -19,11 +20,14 @@ namespace HRCompanyPortal.Controllers
         }
 
         // GET: Employees
+        [Authorize(Roles = "Admin,HRManager,HREmployee")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Employees.ToListAsync());
         }
 
+
+        [Authorize(Roles = "Admin,HRManager,HREmployee")]
         // GET: Employees/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -43,6 +47,7 @@ namespace HRCompanyPortal.Controllers
         }
 
         // GET: Employees/Create
+        [Authorize(Roles = "HRManager")]
         public IActionResult Create()
         {
             return View();
@@ -52,6 +57,7 @@ namespace HRCompanyPortal.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "HRManager")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("EmployeeId,FirstName,LastName,Position,Department,Salary,DOJ,LastUpdated")] Employee employee)
         {
@@ -69,6 +75,7 @@ namespace HRCompanyPortal.Controllers
         }
 
         // GET: Employees/Edit/5
+        [Authorize(Roles = "HRManager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -89,6 +96,7 @@ namespace HRCompanyPortal.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "HRManager")]
         public async Task<IActionResult> Edit(int id, [Bind("EmployeeId,FirstName,LastName,Position,Department,Salary,DOJ,LastUpdated")] Employee employee)
         {
             if (id != employee.EmployeeId)
@@ -120,6 +128,7 @@ namespace HRCompanyPortal.Controllers
         }
 
         // GET: Employees/Delete/5
+        [Authorize(Roles = "HRManager")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -138,6 +147,7 @@ namespace HRCompanyPortal.Controllers
         }
 
         // POST: Employees/Delete/5
+        [Authorize(Roles = "HRManager")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

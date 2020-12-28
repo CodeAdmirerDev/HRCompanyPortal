@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using HRCompanyPortal.Areas.Identity.Data;
 using HRCompanyPortal.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HRCompanyPortal.Controllers
 {
+    
     public class RoleController : Controller
     {
 

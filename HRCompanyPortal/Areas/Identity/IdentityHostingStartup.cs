@@ -29,6 +29,7 @@ namespace HRCompanyPortal.Areas.Identity
                     options.Password.RequireUppercase = false;
                 }).AddEntityFrameworkStores<HRCompanyPortalContext>();
 
+                services.ConfigureApplicationCookie(opts => opts.AccessDeniedPath = "/Account/Accessdenined");
 
 
             });

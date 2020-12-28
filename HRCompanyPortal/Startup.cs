@@ -6,6 +6,7 @@ using HRCompanyPortal.Areas.Identity.Data;
 using HRCompanyPortal.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -48,6 +49,73 @@ namespace HRCompanyPortal
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+
+            /*
+
+            Middleware execution order for Use,Run,Map methods in ASP.NET core
+
+            app.Map("/Suri", appmapsuri =>
+             {
+
+
+                 appmapsuri.Use(async (context, next) =>
+                 {
+
+                     await context.Response.WriteAsync("Suri befor I am from use method ");
+
+
+                     await context.Response.WriteAsync(" Suri after I am from use method");
+
+                     await next();
+
+                 });
+
+
+                 appmapsuri.Run(async (context) =>
+                 {
+
+                     await context.Response.WriteAsync("Suri2.befor I am from run method ");
+
+                     await context.Response.WriteAsync("Suri 2.after I am from run method");
+
+
+                 });
+
+
+
+             });
+
+
+
+            app.Run(async (context) =>
+            {
+
+                await context.Response.WriteAsync("2.befor I am from run method ");
+
+                await context.Response.WriteAsync("2.after I am from run method");
+
+
+            });
+
+
+            app.Use(async (context, next) =>
+            {
+
+                await context.Response.WriteAsync("befor I am from use method ");
+
+
+                await context.Response.WriteAsync("after I am from use method");
+
+                await next();
+
+            });
+
+            */
+
+            
+
+
             app.UseStaticFiles();
 
             app.UseRouting();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HRCompanyPortal.Areas.Identity.Data;
+using HRCompanyPortal.Middlewares;
 using HRCompanyPortal.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -51,6 +52,7 @@ namespace HRCompanyPortal
             }
 
 
+            app.UseLogMiddleware();
             /*
 
             Middleware execution order for Use,Run,Map methods in ASP.NET core
@@ -113,7 +115,7 @@ namespace HRCompanyPortal
 
             */
 
-            
+
 
 
             app.UseStaticFiles();

@@ -6,7 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HRCompanyPortal.Models;
+using HRCompanyPortal.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
+using HRCompanyPortal.Extenstions;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace HRCompanyPortal.Controllers
 {
@@ -14,16 +20,61 @@ namespace HRCompanyPortal.Controllers
     {
         private readonly HRComPortalDbContext _context;
 
-        public EmployeesController(HRComPortalDbContext context)
+        private IEmpRepository _repo;
+        private ILogger<EmployeesController> _logger;
+        public EmployeesController(HRComPortalDbContext context,IEmpRepository repository,
+            ILogger<EmployeesController> logger)
         {
             _context = context;
+
+            _repo = repository;
+            _logger = logger;
         }
 
-        // GET: Employees
+
+        public ActionResult ClearSeesion()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
+
+            // GET: Employees
         [Authorize(Roles = "Admin,HRManager,HREmployee")]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Employees.ToListAsync());
+            //  return View(await _context.Employees.ToListAsync());
+
+            _logger.LogInformation("I am in the index method of employee");
+
+
+            List<Employee> emplist = new List<Employee>();
+
+            using (var httpclient =new HttpClient())
+            {
+
+                using (var response=await httpclient.GetAsync("http://localhost:8888/api/Employee/GetEmp"))
+                {
+
+                    string empRespData = await response.Content.ReadAsStringAsync();
+
+                    emplist = JsonConvert.DeserializeObject<List<Employee>>(empRespData);
+                }
+
+
+            }
+
+
+
+                ViewBag.EMPName = "Suri";
+            ViewData["empn"] = "Vinay";
+            TempData["Empna"] = "Amar";
+
+            HttpContext.Session.SetString("Empnaaa", "Phani");
+
+            HttpContext.Session.SetObject("suri", emplist);
+
+           // return RedirectToAction("Index","Home");
+            return View(emplist);
         }
 
 
@@ -36,14 +87,32 @@ namespace HRCompanyPortal.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .FirstOrDefaultAsync(m => m.EmployeeId == id);
-            if (employee == null)
+            //var employee = await _context.Employees
+            //    .FirstOrDefaultAsync(m => m.EmployeeId == id);
+            //if (employee == null)
+            //{
+            //    return NotFound();
+            //}
+
+
+            Employee empdat = new Employee();
+            using (var httpclient = new HttpClient())
             {
-                return NotFound();
+
+                using (var response = await httpclient.GetAsync("http://localhost:8888/api/Employee/"+id))
+                {
+
+                    string empRespData = await response.Content.ReadAsStringAsync();
+
+                    empdat = JsonConvert.DeserializeObject<Employee>(empRespData);
+                }
+
+
             }
 
-            return View(employee);
+
+
+            return View(empdat);
         }
 
         // GET: Employees/Create
@@ -88,8 +157,18 @@ namespace HRCompanyPortal.Controllers
             {
                 return NotFound();
             }
+
+            TempData["PageTitle"] = "Employee eidt page";
+
+            TempData["PageHeader"] = "Employee eidt";
+
+            TempData["EmployeeModel"] = employee;
+
+            
             return View(employee);
         }
+
+
 
         // POST: Employees/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 

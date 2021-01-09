@@ -1,8 +1,17 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http;
+
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
+
+    <h5>Empname from tempdate<p style="color:red;"> @TempData["Empna"]</p></h5>
+    <h5>Empname from veiwbag<p style="color:red;">  @ViewBag.EMPName</p></h5>
+    <h5>Empname from viewdata<p style="color:red;"> @ViewData["empn"]</p></h5>
+    <h5>Empname from Session <p style="color:red;"> @HttpContextAccessor.HttpContext.Session.GetString("Empnaaa")</p></h5>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>

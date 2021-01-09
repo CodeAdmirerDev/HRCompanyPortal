@@ -25,22 +25,28 @@ namespace HRCompanyPortal.Middlewares
 
         public async Task InvokeAsync(HttpContext httpContext)
         {
+            try { 
 
+            //using ( var reader =new StreamReader(httpContext.Request.Body))
+            //{
 
-            using ( var reader =new StreamReader(httpContext.Request.Body))
-            {
+            //    var reqbody = await reader.ReadToEndAsync();
 
-                var reqbody = await reader.ReadToEndAsync();
+            //    _logger.LogInformation(reqbody);
+            //    _logger.LogWarning(reqbody);
+            //    _logger.LogError(reqbody);
+            //    _logger.LogDebug(reqbody);
+            //    _logger.LogInformation("GET Pages.PrivacyModel called.");
 
-                _logger.LogInformation(reqbody);
-                _logger.LogWarning(reqbody);
-                _logger.LogError(reqbody);
-                _logger.LogDebug(reqbody);
-                _logger.LogInformation("GET Pages.PrivacyModel called.");
-
-            }
+            //}
 
                 await _next(httpContext);
+            }
+            catch (Exception e)
+            {
+                await _next(httpContext);
+            }
+
         }
     }
 

@@ -13,7 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using HRCompanyPortal.Repositories;
+using Microsoft.Extensions.Logging;
+using System.IO;
 namespace HRCompanyPortal
 {
     public class Startup
@@ -31,8 +33,16 @@ namespace HRCompanyPortal
             services.AddDbContext<HRComPortalDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("HRComPortalDbContextConnection")));
 
+         
+            services.AddSingleton<IEmpRepository, EmpRepository>();
 
-            
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            //services.AddTransient<IEmpRepository, EmpRepository>();
+
+            //services.AddScoped<IEmpRepository, EmpRepository>();
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+
             services.AddControllersWithViews();
             services.AddRazorPages();
             
@@ -40,8 +50,13 @@ namespace HRCompanyPortal
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,ILoggerFactory factorylog)
         {
+
+            var pathforlogfile = Directory.GetCurrentDirectory();
+
+            factorylog.AddFile($"{pathforlogfile}\\Log\\NewLog.txt");
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -52,7 +67,7 @@ namespace HRCompanyPortal
             }
 
 
-            app.UseLogMiddleware();
+            
             /*
 
             Middleware execution order for Use,Run,Map methods in ASP.NET core
@@ -117,14 +132,16 @@ namespace HRCompanyPortal
 
 
 
-
+            
             app.UseStaticFiles();
+            app.UseSession();
 
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseLogMiddleware();
 
             app.UseEndpoints(endpoints =>
             {

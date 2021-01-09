@@ -1,14 +1,20 @@
 ﻿@model HRCompanyPortal.Models.Employee
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = TempData["PageTitle"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <h1>Edit</h1>
-
-<h4>Employee</h4>
 <hr />
+
+@{ 
+    var empdata = TempData["EmployeeModel"] as
+        HRCompanyPortal.Models.Employee;
+
+    var headermsg = TempData.Peek("PageHeader").ToString();
+}
+<h4>@headermsg for @empdata.FirstName</h4>
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">

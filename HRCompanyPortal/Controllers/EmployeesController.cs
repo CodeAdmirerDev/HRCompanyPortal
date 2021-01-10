@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using HRCompanyPortal.Extenstions;
 using System.Net.Http;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace HRCompanyPortal.Controllers
 {
@@ -52,7 +53,7 @@ namespace HRCompanyPortal.Controllers
             using (var httpclient =new HttpClient())
             {
 
-                using (var response=await httpclient.GetAsync("http://localhost:8888/api/Employee/GetEmp"))
+                using (var response=await httpclient.GetAsync("http://localhost:8888/api/Employee/AllEmps"))
                 {
 
                     string empRespData = await response.Content.ReadAsStringAsync();
@@ -99,7 +100,7 @@ namespace HRCompanyPortal.Controllers
             using (var httpclient = new HttpClient())
             {
 
-                using (var response = await httpclient.GetAsync("http://localhost:8888/api/Employee/"+id))
+                using (var response = await httpclient.GetAsync("http://localhost:8888/api/Employee/GetEmpByID/" + id))
                 {
 
                     string empRespData = await response.Content.ReadAsStringAsync();
@@ -132,8 +133,32 @@ namespace HRCompanyPortal.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(employee);
-                await _context.SaveChangesAsync();
+
+
+                Employee empdata = new Employee();
+
+                StringContent content = new StringContent(JsonConvert.SerializeObject(employee), Encoding.UTF8, "application/json");
+
+
+                using (var httpclient = new HttpClient())
+                {
+
+                    using (var response = await httpclient.PostAsync("http://localhost:8888/api/Employee/Postemp/", content))
+                    {
+
+                        string empRespData = await response.Content.ReadAsStringAsync();
+
+                        empdata = JsonConvert.DeserializeObject<Employee>(empRespData);
+
+
+                    }
+
+
+                }
+
+
+                //_context.Add(employee);
+                //await _context.SaveChangesAsync();
 
                 TempData["SucessMsg"] = "Employee record created sucessfully !";
                 return RedirectToAction(nameof(Index));
@@ -152,7 +177,24 @@ namespace HRCompanyPortal.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees.FindAsync(id);
+            //var employee = await _context.Employees.FindAsync(id);
+
+            Employee employee = new Employee();
+            using (var httpclient = new HttpClient())
+            {
+
+                using (var response = await httpclient.GetAsync("http://localhost:8888/api/Employee/GetEmpByID/" + id))
+                {
+
+                    string empRespData = await response.Content.ReadAsStringAsync();
+
+                    employee = JsonConvert.DeserializeObject<Employee>(empRespData);
+                }
+
+
+            }
+
+
             if (employee == null)
             {
                 return NotFound();
@@ -187,8 +229,33 @@ namespace HRCompanyPortal.Controllers
             {
                 try
                 {
-                    _context.Update(employee);
-                    await _context.SaveChangesAsync();
+
+
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(employee), Encoding.UTF8, "application/json");
+
+
+                    using (var httpclient = new HttpClient())
+                    {
+
+                        using (var response = await httpclient.PutAsync("http://localhost:8888/api/Employee/PutEmp/"+id, content))
+                        {
+
+                            string empRespData = await response.Content.ReadAsStringAsync();
+
+
+
+                        }
+
+
+                    }
+
+
+                    //_context.Update(employee);
+                    //await _context.SaveChangesAsync();
+
+
+
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -215,8 +282,29 @@ namespace HRCompanyPortal.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .FirstOrDefaultAsync(m => m.EmployeeId == id);
+
+
+            Employee employee = new Employee();
+            using (var httpclient = new HttpClient())
+            {
+
+                using (var response = await httpclient.GetAsync("http://localhost:8888/api/Employee/GetEmpByID/" + id))
+                {
+
+                    string empRespData = await response.Content.ReadAsStringAsync();
+
+                    employee = JsonConvert.DeserializeObject<Employee>(empRespData);
+                }
+
+
+            }
+
+
+            //var employee = await _context.Employees
+            //    .FirstOrDefaultAsync(m => m.EmployeeId == id);
+
+
+
             if (employee == null)
             {
                 return NotFound();
@@ -231,9 +319,29 @@ namespace HRCompanyPortal.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-            _context.Employees.Remove(employee);
-            await _context.SaveChangesAsync();
+        //    var employee = await _context.Employees.FindAsync(id);
+        //    _context.Employees.Remove(employee);
+        //    await _context.SaveChangesAsync();
+
+
+
+
+        Employee employee = new Employee();
+            using (var httpclient = new HttpClient())
+            {
+
+                using (var response = await httpclient.DeleteAsync("http://localhost:8888/api/Employee/DeleteempId/" + id))
+                {
+
+                    string empRespData = await response.Content.ReadAsStringAsync();
+
+    employee = JsonConvert.DeserializeObject<Employee>(empRespData);
+                }
+
+
+            }
+
+
             return RedirectToAction(nameof(Index));
         }
 

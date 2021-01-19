@@ -11,9 +11,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using HRCompanyPortal.Extenstions;
+using Microsoft.Extensions.Configuration;
 using System.Net.Http;
 using Newtonsoft.Json;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.Net.Http.Headers;
+using Microsoft.IdentityModel.Tokens;
 
 namespace HRCompanyPortal.Controllers
 {
@@ -23,15 +27,31 @@ namespace HRCompanyPortal.Controllers
 
         private IEmpRepository _repo;
         private ILogger<EmployeesController> _logger;
-        public EmployeesController(HRComPortalDbContext context,IEmpRepository repository,
-            ILogger<EmployeesController> logger)
+
+        public IConfiguration _configuration;
+        public EmployeesController(HRComPortalDbContext context,IEmpRepository repository, IConfiguration configuration
+            ,ILogger<EmployeesController> logger)
         {
             _context = context;
-
+            _configuration = configuration;
             _repo = repository;
             _logger = logger;
         }
+        public string GetToken()
+        {
 
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:key"]));
+
+            var signin = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+
+            var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Audience"]
+                , expires: DateTime.Now.AddDays(1), signingCredentials: signin);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+
+        }
 
         public ActionResult ClearSeesion()
         {
@@ -50,10 +70,14 @@ namespace HRCompanyPortal.Controllers
 
             List<Employee> emplist = new List<Employee>();
 
+            var tokenString = GetToken();
+
+
             using (var httpclient =new HttpClient())
             {
 
-                using (var response=await httpclient.GetAsync("http://localhost:8888/api/Employee/AllEmps"))
+                httpclient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                using (var response=await httpclient.GetAsync("http://localhost:54565/api/Employee/AllEmps"))
                 {
 
                     string empRespData = await response.Content.ReadAsStringAsync();
@@ -94,18 +118,20 @@ namespace HRCompanyPortal.Controllers
             //{
             //    return NotFound();
             //}
+            var tokenString = GetToken();
 
 
-            Employee empdat = new Employee();
+
+           List<Employee> empdat = new List <Employee>();
             using (var httpclient = new HttpClient())
             {
-
-                using (var response = await httpclient.GetAsync("http://localhost:8888/api/Employee/GetEmpByID/" + id))
+                httpclient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                using (var response = await httpclient.GetAsync("http://localhost:54565/api/Employee/GetEmpByID/" + id))
                 {
 
                     string empRespData = await response.Content.ReadAsStringAsync();
 
-                    empdat = JsonConvert.DeserializeObject<Employee>(empRespData);
+                    empdat = JsonConvert.DeserializeObject<List<Employee>>(empRespData);
                 }
 
 
@@ -113,7 +139,7 @@ namespace HRCompanyPortal.Controllers
 
 
 
-            return View(empdat);
+            return View(empdat[0]);
         }
 
         // GET: Employees/Create

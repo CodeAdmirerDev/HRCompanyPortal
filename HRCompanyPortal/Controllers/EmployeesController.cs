@@ -18,6 +18,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Net.Http.Headers;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace HRCompanyPortal.Controllers
 {
@@ -40,6 +41,7 @@ namespace HRCompanyPortal.Controllers
         public string GetToken()
         {
 
+            var claims = new[] {new Claim("Name", "Amar"), new Claim("email", "Amar@gmail.com") };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:key"]));
 
@@ -47,7 +49,7 @@ namespace HRCompanyPortal.Controllers
 
 
             var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Audience"]
-                , expires: DateTime.Now.AddDays(1), signingCredentials: signin);
+                , claims, expires: DateTime.Now.AddDays(1), signingCredentials: signin);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
 
@@ -133,7 +135,6 @@ namespace HRCompanyPortal.Controllers
 
                     empdat = JsonConvert.DeserializeObject<List<Employee>>(empRespData);
                 }
-
 
             }
 
